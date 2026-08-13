@@ -1,6 +1,6 @@
 # 日志数据分析与处理服务
 
-基于 Python + MySQL + 多线程的访问日志清洗与分析服务。
+基于 Python + MySQL + 多线程的访问日志清洗与分析服务，同时提供完整的 Web 分析仪表盘。
 
 ## 项目背景
 
@@ -82,9 +82,52 @@ export DATABASE_URL="mysql+pymysql://root:password@localhost/log_analysis"
 python main.py --file sample_data/access.log
 ```
 
+## Web 仪表盘
+
+项目内置了一个可直接运行的浏览器分析界面，无需先配置 MySQL：
+
+```bash
+cd log-analysis-service
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+python webapp.py
+```
+
+浏览器访问 `http://127.0.0.1:5001/`，包含以下功能：
+
+- 概览页：总请求量、独立访客、错误率、平均响应等核心指标
+- 4 类图表：请求趋势折线图、状态码环形图、热门接口条形图、响应时间分布图
+- 每日趋势：按天统计请求量、访客、错误率、P95 响应时间
+- 接口分析：Top API 调用量、性能与错误率排行
+- 慢请求：响应时间最长的请求列表，定位性能瓶颈
+- IP 分析：高频客户端 IP 流量与异常分析
+- 日志浏览器：支持状态码、方法、IP、路径、响应时间多维筛选和分页
+- 文件上传：拖拽或选择日志文件，自动清洗、并行写入并更新报表
+
+首次启动时若没有历史数据，系统会自动生成 14 天演示日志，保证仪表盘开箱即可体验。上传真实日志后会追加到现有数据中。
+
+### VS Code 调试
+
+项目包含 `.vscode/launch.json`，使用 **Run Log Analysis Web** 配置按 `F5` 即可调试 Web 服务。
+
 ## 测试
 
 ```bash
 pytest tests/
 ```
 
+## API 概览
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/stats` | 整体处理统计 |
+| GET | `/api/reports/daily` | 每日汇总 |
+| GET | `/api/reports/top-apis` | 热门接口排行 |
+| GET | `/api/reports/slow-requests` | 慢请求列表 |
+| GET | `/api/reports/top-ips` | 高频 IP 排行 |
+| GET | `/api/reports/status-codes` | 状态码分布 |
+| GET | `/api/logs` | 原始日志查询（分页+筛选） |
+| POST | `/api/upload` | 上传并处理日志文件 |
+| GET | `/api/health` | 健康检查 |

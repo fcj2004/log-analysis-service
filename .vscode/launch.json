@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Log Analysis Web",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/webapp.py",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}
+
